@@ -1,12 +1,13 @@
 import { styled } from 'styled-components';
 
 interface IconProps {
+  title: string;
   className?: string;
 }
 
-const Icon = ({ className }: IconProps) => (
+const Icon = ({ title, className }: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" className={className}>
-    <title>Mine klager</title>
+    <title>{title}</title>
 
     <path
       fill="#D8F9FF"

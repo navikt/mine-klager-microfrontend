@@ -84,7 +84,7 @@ interface CardContentProps {
 const CardContent = ({ lang }: CardContentProps) => (
   <>
     <Content gap="5" align="center" wrap={false}>
-      <CardIcon />
+      <CardIcon title={HEADING[lang]} />
 
       <InnerContent>
         <Heading level="3" size="small" className="mine-klager-card-heading">
@@ -108,14 +108,13 @@ const InnerContent = styled(VStack)`
 `;
 
 const HEADING: Translation = {
-  [Language.NB]: 'Mine klager og anker',
-  [Language.NN]: 'Mine klager og anker',
-  [Language.EN]: 'My complaints and appeals',
+  [Language.NB]: 'Mine saker hos Klageinstans',
+  [Language.NN]: 'Mine saker hjå Klageinstans',
+  [Language.EN]: 'My cases with Nav Complaints Unit',
 };
 
 const DESCRIPTION: Translation = {
-  [Language.NB]: 'Her kan du se status på dine klager og anker hos klageinstansen.',
-  [Language.NN]: 'Her kan du sjå status på dine klager og anker hjå klageinstansen.',
-  [Language.EN]:
-    'Here you can see the status of your complaints and appeals with Nav Complaints Unit (Nav klageinstans).',
+  [Language.NB]: 'Her kan du se status på dine saker hos Klageinstans.',
+  [Language.NN]: 'Her kan du sjå status på dine saker hjå Klageinstans.',
+  [Language.EN]: 'Here you can see the status of your cases with Nav Complaints Unit (Klageinstans).',
 };
