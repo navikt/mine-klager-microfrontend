@@ -7,7 +7,6 @@ export const Microfrontend = () => {
   return <Card lang={language} href={getMineKlagerUrl(language)} />;
 };
 
-// biome-ignore lint/style/noDefaultExport: Min side microfrontends must have default export
 export default Microfrontend;
 
 const getMineKlagerUrl = (lang: Language): string => {

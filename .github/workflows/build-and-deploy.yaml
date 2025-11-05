@@ -22,12 +22,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      
+
       - name: Install dependencies
         shell: bash
         env:
@@ -41,9 +41,10 @@ jobs:
         env:
           VERSION: ${{ github.sha }}
         run: bun run build
-      
-      - name: Test frontend
-        run: bun test
+
+      # Disabled until there are tests.
+      # - name: Test
+      #   run: bun test
 
       - name: CDN Upload
         id: cdn-upload
