@@ -1,9 +1,9 @@
 import { CardIcon } from '@app/icons/icon';
-import { Language } from '@app/language';
 import type { Translation } from '@app/language';
+import { Language } from '@app/language';
 import { logNavigereEvent } from '@app/utils/amplitude';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
-import { BodyLong, HStack, Heading, VStack } from '@navikt/ds-react';
+import { BodyLong, Heading, HStack, VStack } from '@navikt/ds-react';
 import styled from 'styled-components';
 
 interface CardProps {

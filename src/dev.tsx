@@ -1,6 +1,6 @@
 import { PreviewCard } from '@app/card';
 import { Language, type Translation } from '@app/language';
-import { HStack, Heading, Tag, VStack } from '@navikt/ds-react';
+import { Heading, HStack, Tag, VStack } from '@navikt/ds-react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { styled } from 'styled-components';

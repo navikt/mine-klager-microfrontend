@@ -1,19 +1,30 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": { "enabled": true },
+  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "root": true,
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": ["**"]
+          }
+        }
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
       "nursery": {
-        "all": true,
-        "useImportRestrictions": { "level": "off" },
-        "noSecrets": { "level": "off", "options": {} },
-        "useComponentExportOnlyModules": { "level": "off", "options": {} },
-        "noEnum": { "level": "off" },
-        "useExplicitType": { "level": "off" },
-        "useConsistentMemberAccessibility": { "level": "off", "options": {} },
-        "useConsistentCurlyBraces": { "level": "off", "fix": "none" }
+        "useExplicitType": { "level": "off" }
       },
       "correctness": {
         "noUndeclaredDependencies": { "level": "off" },
@@ -23,7 +34,11 @@
       "style": {
         "noImplicitBoolean": { "level": "off", "fix": "none" },
         "useDefaultSwitchClause": { "level": "off" },
-        "useNamingConvention": { "level": "off", "fix": "none", "options": {} }
+        "useNamingConvention": { "level": "off", "fix": "none", "options": {} },
+        "useComponentExportOnlyModules": { "level": "off", "options": {} },
+        "noEnum": { "level": "off" },
+        "useConsistentMemberAccessibility": { "level": "off", "options": {} },
+        "useConsistentCurlyBraces": { "level": "off", "fix": "none" }
       },
       "suspicious": {
         "noConsole": { "level": "off", "options": { "allow": ["debug", "info", "warn", "error"] } },
@@ -32,6 +47,9 @@
       },
       "complexity": {
         "useSimplifiedLogicExpression": { "level": "off" }
+      },
+      "security": {
+        "noSecrets": { "level": "off", "options": {} }
       }
     }
   },
@@ -41,6 +59,6 @@
     "linter": { "enabled": true }
   },
   "files": {
-    "ignore": ["dist/**"]
+    "includes": ["**", "!**/dist"]
   }
 }
