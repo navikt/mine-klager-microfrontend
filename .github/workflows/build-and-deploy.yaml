@@ -10,18 +10,15 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       id-token: write
       packages: write
-
     outputs:
-      upload_url: ${{ steps.extract-manifest-url.outputs.upload_url }}
-
+      image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -42,47 +39,76 @@ jobs:
           VERSION: ${{ github.sha }}
         run: bun run build
 
-      # Disabled until there are tests.
-      # - name: Test
-      #   run: bun test
-
       - name: CDN Upload
         id: cdn-upload
         uses: nais/deploy/actions/cdn-upload/v2@master
         with:
           team: klage
-          source: ./dist/
+          source: ./dist/client/_astro
           destination: mine-klager-microfrontend
-          source_keep_parent_name: false
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 
-      - name: Extract manifest URL
-        id: extract-manifest-url
-        run: |
-          files="${{ steps.cdn-upload.outputs.uploaded }}"
-          first_file=$(echo $files | cut -d',' -f1)
-          echo "upload_url=https://cdn.nav.no/$first_file" >> $GITHUB_OUTPUT
+      - name: Build and push
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: klage
 
-  update-manifest-dev-gcp:
-    name: Update manifest in dev
-    secrets: inherit
-    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v2.yaml@main
+  update-manifest-dev:
+    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
     needs: build
+    secrets: inherit
     with:
+      id: mine-klager-microfrontend
+      url: http://mine-klager-microfrontend.klage
+      appname: mine-klager-microfrontend
+      namespace: klage
       cluster: dev-gcp
-      id: mine-klager-microfrontend
-      url: ${{needs.build.outputs.upload_url}}
-      commitmsg: ${{ github.event.head_commit.message}}
+      commitmsg: ${{ github.event.head_commit.message }}
+      fallback: fallback
+      ssr: true
 
-  update-manifest-prod-gcp:
-    name: Update manifest in prod
-    secrets: inherit
+  update-manifest-prod:
     if: github.ref == 'refs/heads/main'
-    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v2.yaml@main
+    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
     needs: build
+    secrets: inherit
     with:
-      cluster: prod-gcp
       id: mine-klager-microfrontend
-      url: ${{needs.build.outputs.upload_url}}
-      commitmsg: ${{ github.event.head_commit.message}}
+      url: http://mine-klager-microfrontend.klage
+      appname: mine-klager-microfrontend
+      namespace: klage
+      cluster: prod-gcp
+      commitmsg: ${{ github.event.head_commit.message }}
+      fallback: fallback
+      ssr: true
+
+  deploy-dev:
+    needs: [build, update-manifest-dev]
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Deploy to dev"
+        uses: "nais/deploy/actions/deploy@v2"
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: nais/dev.yaml
+          VAR: image=${{ needs.build.outputs.image }},version=${{ github.sha }}
+
+  deploy-prod:
+    needs: [build, update-manifest-prod]
+    if: github.ref == 'refs/heads/main'
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Deploy to prod"
+        uses: "nais/deploy/actions/deploy@v2"
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: nais/prod.yaml
+          VAR: image=${{ needs.build.outputs.image }},version=${{ github.sha }}

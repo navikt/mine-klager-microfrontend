@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
   "root": true,
   "vcs": {
     "enabled": true,
@@ -29,7 +29,9 @@
       "correctness": {
         "noUndeclaredDependencies": { "level": "off" },
         "useImportExtensions": { "level": "off", "fix": "none", "options": {} },
-        "noUndeclaredVariables": { "level": "off" }
+        "noUndeclaredVariables": { "level": "off" },
+        "noUnusedImports": "off",
+        "noUnusedVariables": "off"
       },
       "style": {
         "noImplicitBoolean": { "level": "off", "fix": "none" },
@@ -57,6 +59,21 @@
   "javascript": {
     "formatter": { "quoteStyle": "single", "arrowParentheses": "always", "bracketSameLine": false },
     "linter": { "enabled": true }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "lineWidth": 120,
+      "indentWidth": 2,
+      "lineEnding": "lf",
+      "quoteStyle": "double"
+    },
+    "linter": { "enabled": true },
+    "assist": { "enabled": true }
   },
   "files": {
     "includes": ["**", "!**/dist"]
