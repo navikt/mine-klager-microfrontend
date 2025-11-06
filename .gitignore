@@ -1,6 +1,25 @@
-node_modules
-dist
-build
+# Go binaries
+server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS generated files
 .DS_Store
-.idea
-.tsbuildinfo
+Thumbs.db
