@@ -1,12 +1,11 @@
-import { styled } from 'styled-components';
+import styles from '@/src/components/icon.module.css';
 
 interface IconProps {
   title: string;
-  className?: string;
 }
 
-const Icon = ({ title, className }: IconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" className={className}>
+export const CardIcon = ({ title }: IconProps) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" className={styles.icon}>
     <title>{title}</title>
 
     <path
@@ -23,8 +22,3 @@ const Icon = ({ title, className }: IconProps) => (
     />
   </svg>
 );
-
-export const CardIcon = styled(Icon)`
-  width: 56px;
-  flex-shrink: 0;
-`;

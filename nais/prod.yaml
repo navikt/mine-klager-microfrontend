@@ -1,0 +1,36 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: mine-klager-microfrontend
+  namespace: klage
+  labels:
+    team: klage
+spec:
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+  tokenx:
+    enabled: true
+  image: {{ image }}
+  port: 3000
+  liveness:
+    path: /api/internal/isAlive
+    initialDelay: 10
+  readiness:
+    path: /api/internal/isReady
+    initialDelay: 10
+  replicas:
+    min: 2
+    max: 4
+  accessPolicy:
+    inbound:
+      rules:
+        - application: tms-min-side
+          namespace: min-side
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: "30m"
+      memory: 64Mi

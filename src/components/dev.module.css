@@ -1,0 +1,12 @@
+.tag {
+  margin-inline: auto;
+  width: fit-content;
+}
+
+.aspectMobile {
+  aspect-ratio: 9 / 16;
+}
+
+.aspectDesktop {
+  aspect-ratio: 16 / 9;
+}
