@@ -1,0 +1,20 @@
+---
+import { Dev } from '@/src/components/dev';
+import { Microfrontend } from '@/src/components/microfrontend';
+import { isLanguage, Language } from '@/src/language';
+import Layout from '@/src/layouts/Layout.astro';
+import { isLocal } from '@/src/utils/environment';
+
+const { currentLocale } = Astro;
+const language = currentLocale !== undefined && isLanguage(currentLocale) ? currentLocale : Language.NB;
+---
+
+{isLocal ? <Layout title="Mine klager på Min side"><Dev /></Layout> : <Microfrontend language={language} />}
+
+
+<script>
+  import { logEvent } from "@/src/utils/analytics";
+
+  const microfrontend = document.querySelector("#link");
+  microfrontend?.addEventListener("click", () => logEvent("Mine klage "));
+</script>

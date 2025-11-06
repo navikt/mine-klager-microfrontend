@@ -29,7 +29,9 @@
       "correctness": {
         "noUndeclaredDependencies": { "level": "off" },
         "useImportExtensions": { "level": "off", "fix": "none", "options": {} },
-        "noUndeclaredVariables": { "level": "off" }
+        "noUndeclaredVariables": { "level": "off" },
+        "noUnusedImports": "off",
+        "noUnusedVariables": "off"
       },
       "style": {
         "noImplicitBoolean": { "level": "off", "fix": "none" },
