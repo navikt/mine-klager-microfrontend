@@ -1,13 +1,4 @@
-FROM gcr.io/distroless/nodejs22-debian12
+FROM cgr.dev/chainguard/nginx:latest@sha256:dad6ecc27985d8f09292bb6df5778caa001299af8f486fb023b7efda3d3f3a10
 
-WORKDIR /usr/src/app
-
-COPY ./dist ./dist
-COPY ./node_modules ./node_modules
-
-ENV HOST=0.0.0.0
-ENV PORT=3000
-
-CMD ["./dist/server/entry.mjs"]
-
-EXPOSE $PORT
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY html/ /usr/share/nginx/html/

@@ -18,34 +18,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        shell: bash
-        env:
-          BUN_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        run: |
-          echo -e "\n[install.scopes]\n\"@navikt\" = { token = \"$BUN_AUTH_TOKEN\", url = \"https://npm.pkg.github.com/\" }" >> bunfig.toml
-          bun install --frozen-lockfile
-
-      - name: Build
-        shell: bash
-        env:
-          VERSION: ${{ github.sha }}
-        run: bun run build
-
-      - name: CDN Upload
-        id: cdn-upload
-        uses: nais/deploy/actions/cdn-upload/v2@master
-        with:
-          team: klage
-          source: ./dist/client/_astro
-          destination: mine-klager-microfrontend
+        uses: actions/checkout@v4
 
       - name: Build and push
         uses: nais/docker-build-push@v0

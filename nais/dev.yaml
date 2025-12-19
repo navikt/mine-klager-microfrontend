@@ -6,20 +6,14 @@ metadata:
   labels:
     team: klage
 spec:
-  observability:
-    autoInstrumentation:
-      enabled: true
-      runtime: nodejs
-  tokenx:
-    enabled: true
   image: {{ image }}
-  port: 3000
+  port: 8080
   liveness:
     path: /api/internal/isAlive
-    initialDelay: 10
+    initialDelay: 5
   readiness:
     path: /api/internal/isReady
-    initialDelay: 10
+    initialDelay: 5
   replicas:
     min: 2
     max: 4
@@ -30,7 +24,14 @@ spec:
           namespace: min-side
   resources:
     limits:
-      memory: 128Mi
-    requests:
-      cpu: "30m"
       memory: 64Mi
+    requests:
+      cpu: "10m"
+      memory: 32Mi
+  filesFrom:
+    - emptyDir:
+        medium: Memory
+      mountPath: /var/run
+    - emptyDir:
+        medium: Memory
+      mountPath: /var/lib/nginx/tmp
