@@ -11,14 +11,18 @@ spec:
   image: {{ image }}
   port: 8080
   liveness:
-    path: /api/internal/isAlive
-    initialDelay: 5
+    path: /isAlive
+    initialDelay: 0
+    periodSeconds: 2
+    timeout: 1
   readiness:
-    path: /api/internal/isReady
-    initialDelay: 5
+    path: /isReady
+    initialDelay: 0
+    periodSeconds: 1
+    timeout: 1
   replicas:
     min: 2
-    max: 4
+    max: 2
   accessPolicy:
     inbound:
       rules:
@@ -26,14 +30,7 @@ spec:
           namespace: min-side
   resources:
     limits:
-      memory: 64Mi
-    requests:
-      cpu: "10m"
       memory: 32Mi
-  filesFrom:
-    - emptyDir:
-        medium: Memory
-      mountPath: /var/run
-    - emptyDir:
-        medium: Memory
-      mountPath: /var/lib/nginx/tmp
+    requests:
+      cpu: 1m
+      memory: 8Mi
