@@ -6,6 +6,8 @@ metadata:
   labels:
     team: klage
 spec:
+  tokenx:
+    enabled: true
   image: {{ image }}
   port: 8080
   liveness:

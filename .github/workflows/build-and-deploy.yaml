@@ -20,6 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build HTML files
+        run: |
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
+
       - name: Build and push
         uses: nais/docker-build-push@v0
         id: docker-build-push

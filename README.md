@@ -13,6 +13,7 @@ Static HTML microfrontend served by NGINX.
 Build and run with Docker:
 
 ```sh
+./scripts/build.sh
 docker build -t mine-klager-microfrontend .
 docker run -p 8080:8080 mine-klager-microfrontend
 ```
