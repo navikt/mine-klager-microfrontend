@@ -3,75 +3,37 @@ package main
 import (
 	"bytes"
 	"embed"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"sync"
 )
 
-//go:embed templates/*
-var templateFS embed.FS
+//go:embed dist/*
+var distFS embed.FS
 
-type PageData struct {
-	CSS         template.CSS
-	Heading     string
-	Description string
-	URL         string
+func mustRead(name string) []byte {
+	data, err := distFS.ReadFile(name)
+	if err != nil {
+		log.Fatalf("Failed to read %s: %v", name, err)
+	}
+	return data
 }
 
-var tmpl = sync.OnceValue(func() *template.Template {
-	t, err := template.ParseFS(templateFS, "templates/template.html")
-	if err != nil {
-		log.Fatalf("Failed to parse template: %v", err)
-	}
-	return t
-})
-
-var css = sync.OnceValue(func() template.CSS {
-	data, err := templateFS.ReadFile("templates/style.css")
-	if err != nil {
-		log.Fatalf("Failed to read CSS: %v", err)
-	}
-	return template.CSS(data)
-})
-
-var baseURL = sync.OnceValue(func() string {
+func baseURL() string {
 	if os.Getenv("NAIS_CLUSTER_NAME") == "prod-gcp" {
 		return "https://mine-klager.nav.no"
 	}
 	return "https://mine-klager.ansatt.dev.nav.no"
-})
-
-var nbHTML = renderToBytes(PageData{
-	CSS:         css(),
-	Heading:     "Mine saker hos Klageinstans",
-	Description: "Her kan du se status på dine saker hos Klageinstans.",
-	URL:         baseURL(),
-})
-
-var nnHTML = renderToBytes(PageData{
-	CSS:         css(),
-	Heading:     "Mine saker hjå Klageinstans",
-	Description: "Her kan du sjå status på dine saker hjå Klageinstans.",
-	URL:         baseURL() + "/nn",
-})
-
-var enHTML = renderToBytes(PageData{
-	CSS:         css(),
-	Heading:     "My cases with Nav Complaints Unit",
-	Description: "Here you can see the status of your cases with Nav Complaints Unit (Klageinstans).",
-	URL:         baseURL() + "/en",
-})
-
-func renderToBytes(data PageData) []byte {
-	var buf bytes.Buffer
-	if err := tmpl().Execute(&buf, data); err != nil {
-		log.Fatalf("Failed to render template: %v", err)
-	}
-	return buf.Bytes()
 }
+
+func replaceBaseURL(html []byte) []byte {
+	return bytes.ReplaceAll(html, []byte("{{BASE_URL}}"), []byte(baseURL()))
+}
+
+var nbHTML = replaceBaseURL(mustRead("dist/nb.html"))
+var nnHTML = replaceBaseURL(mustRead("dist/nn.html"))
+var enHTML = replaceBaseURL(mustRead("dist/en.html"))
 
 func serveHTML(html []byte) http.HandlerFunc {
 	contentLength := strconv.Itoa(len(html))
@@ -97,7 +59,6 @@ func main() {
 	mux.HandleFunc("/nb", serveHTML(nbHTML))
 	mux.HandleFunc("/nn", serveHTML(nnHTML))
 	mux.HandleFunc("/en", serveHTML(enHTML))
-	mux.HandleFunc("/fallback", serveHTML(nbHTML))
 	mux.HandleFunc("/isAlive", healthHandler)
 	mux.HandleFunc("/isReady", healthHandler)
 

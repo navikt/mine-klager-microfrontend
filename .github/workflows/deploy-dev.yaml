@@ -1,9 +1,6 @@
-name: Build and deploy
+name: Manual deploy to dev
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   build:
@@ -28,21 +25,6 @@ jobs:
       fallback: nb
       ssr: true
 
-  update-manifest-prod:
-    if: github.ref == 'refs/heads/main'
-    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
-    needs: build
-    secrets: inherit
-    with:
-      id: mine-klager-microfrontend
-      url: http://mine-klager-microfrontend.klage
-      appname: mine-klager-microfrontend
-      namespace: klage
-      cluster: prod-gcp
-      commitmsg: ${{ github.event.head_commit.message }}
-      fallback: nb
-      ssr: true
-
   deploy-dev:
     needs: [build, update-manifest-dev]
     runs-on: "ubuntu-latest"
@@ -56,20 +38,4 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais/dev.yaml
-          VAR: image=${{ needs.build.outputs.image }},version=${{ github.sha }}
-
-  deploy-prod:
-    needs: [build, update-manifest-prod]
-    if: github.ref == 'refs/heads/main'
-    runs-on: "ubuntu-latest"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    steps:
-      - uses: "actions/checkout@v4"
-      - name: "Deploy to prod"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: nais/prod.yaml
           VAR: image=${{ needs.build.outputs.image }},version=${{ github.sha }}

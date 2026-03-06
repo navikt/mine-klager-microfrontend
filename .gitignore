@@ -1,5 +1,14 @@
-# Go binaries
+# Build output
+dist/
 server
+
+# Dependencies
+node_modules/
+
+# TypeScript
+.tsbuildinfo
+
+# Go binaries
 *.exe
 *.exe~
 *.dll
