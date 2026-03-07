@@ -17,12 +17,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     /* Paths */
-    "baseUrl": "./src",
+    "baseUrl": "generate/template",
     "paths": {
       "@/*": ["*"]
     },
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["generate/template"]
 }

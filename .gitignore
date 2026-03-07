@@ -1,12 +1,11 @@
 # Build output
-dist/
+templates/template.html
+templates/style.css
 server
+.tsbuildinfo
 
 # Dependencies
 node_modules/
-
-# TypeScript
-.tsbuildinfo
 
 # Go binaries
 *.exe

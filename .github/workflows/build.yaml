@@ -31,20 +31,23 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bun typecheck
-
-      - name: Test
-        run: bun test
-
-      - name: Build frontend
-        run: bun run build
+        run: bun run typecheck
 
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
 
-      - name: Build Go binary
+      - name: Generate HTML template
+        run: bun run template
+
+      - name: Generate CSS
+        run: go run ./generate/css
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build server binary
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
 
       - name: Build and push Docker image

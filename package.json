@@ -1,12 +1,14 @@
 {
   "name": "mine-klager-microfrontend",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "bun run src/generate.tsx",
-    "test": "bun test",
-    "typecheck": "tsc --noEmit",
+    "template": "bun ./generate/template/index.tsx",
+    "typecheck": "tsc",
     "lint": "biome check"
+  },
+  "dependencies": {
+    "@navikt/ds-css": "8.6.0",
+    "@navikt/ds-react": "8.6.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
@@ -16,9 +18,5 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "typescript": "5.9.3"
-  },
-  "dependencies": {
-    "@navikt/ds-css": "8.6.0",
-    "@navikt/ds-react": "8.6.0"
   }
 }

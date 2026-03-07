@@ -1,23 +1,43 @@
 package main
 
 import (
-	"bytes"
-	"embed"
+	_ "embed"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
-//go:embed dist/*
-var distFS embed.FS
+//go:embed templates/template.html
+var templateHTML []byte
 
-func mustRead(name string) []byte {
-	data, err := distFS.ReadFile(name)
-	if err != nil {
-		log.Fatalf("Failed to read %s: %v", name, err)
-	}
-	return data
+//go:embed templates/style.css
+var styleCSS []byte
+
+type variant struct {
+	title       string
+	description string
+	urlSuffix   string
+}
+
+var variants = map[string]variant{
+	"nb": {
+		title:       "Mine saker hos Klageinstans",
+		description: "Her kan du se status på dine saker hos Klageinstans.",
+		urlSuffix:   "",
+	},
+	"nn": {
+		title:       "Mine saker hjå Klageinstans",
+		description: "Her kan du sjå status på dine saker hjå Klageinstans.",
+		urlSuffix:   "/nn",
+	},
+	"en": {
+		title:       "My cases with Nav Complaints Unit",
+		description: "Here you can see the status of your cases with Nav Complaints Unit (Klageinstans).",
+		urlSuffix:   "/en",
+	},
 }
 
 func baseURL() string {
@@ -27,13 +47,36 @@ func baseURL() string {
 	return "https://mine-klager.ansatt.dev.nav.no"
 }
 
-func replaceBaseURL(html []byte) []byte {
-	return bytes.ReplaceAll(html, []byte("{{BASE_URL}}"), []byte(baseURL()))
+func renderVariant(v variant) []byte {
+	url := baseURL() + v.urlSuffix
+
+	markup := string(templateHTML)
+	markup = strings.ReplaceAll(markup, "{{TITLE}}", v.title)
+	markup = strings.ReplaceAll(markup, "{{DESCRIPTION}}", v.description)
+	markup = strings.ReplaceAll(markup, "{{URL}}", url)
+
+	html := fmt.Sprintf(`
+<mine-klager-microfrontend>
+  <template shadowrootmode="open">
+  <style>%s</style>
+  %s
+  </template>
+</mine-klager-microfrontend>
+<script>
+  (function() {
+    var el = document.currentScript.previousElementSibling;
+    if (el.shadowRoot === null) {
+      el.attachShadow({ mode: "open" }).appendChild(el.firstElementChild.content);
+    }
+  })()
+</script>`, styleCSS, strings.TrimSpace(markup))
+
+	return []byte(strings.TrimSpace(html))
 }
 
-var nbHTML = replaceBaseURL(mustRead("dist/nb.html"))
-var nnHTML = replaceBaseURL(mustRead("dist/nn.html"))
-var enHTML = replaceBaseURL(mustRead("dist/en.html"))
+var nbHTML = renderVariant(variants["nb"])
+var nnHTML = renderVariant(variants["nn"])
+var enHTML = renderVariant(variants["en"])
 
 func serveHTML(html []byte) http.HandlerFunc {
 	contentLength := strconv.Itoa(len(html))
