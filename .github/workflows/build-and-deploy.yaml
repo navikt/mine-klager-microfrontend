@@ -36,6 +36,8 @@ jobs:
 
   update-manifest-dev:
     uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
+    permissions:
+      contents: "read"
     needs: build
     secrets: inherit
     with:
@@ -51,6 +53,8 @@ jobs:
   update-manifest-prod:
     if: github.ref == 'refs/heads/main'
     uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
+    permissions:
+      contents: "read"
     needs: build
     secrets: inherit
     with:
