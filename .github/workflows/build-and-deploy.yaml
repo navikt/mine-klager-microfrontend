@@ -18,10 +18,10 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version-file: "go.mod"
 
@@ -29,13 +29,13 @@ jobs:
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
 
       - name: Build and push
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a # v0
         id: docker-build-push
         with:
           team: klage
 
   update-manifest-dev:
-    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
+    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@71678a4147620d62d582b57fe30e1527b4add74f # main
     permissions:
       contents: "read"
     needs: build
@@ -52,7 +52,7 @@ jobs:
 
   update-manifest-prod:
     if: github.ref == 'refs/heads/main'
-    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@main
+    uses: navikt/tms-deploy/.github/workflows/oppdater-mikrofrontend-manifest-v3.yaml@71678a4147620d62d582b57fe30e1527b4add74f # main
     permissions:
       contents: "read"
     needs: build
@@ -74,9 +74,9 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" # v4.4.0
       - name: "Deploy to dev"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@9850be311389ca754d9a9f2280615419d738c891" # v3
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais/dev.yaml
@@ -90,9 +90,9 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" # v4.4.0
       - name: "Deploy to prod"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@9850be311389ca754d9a9f2280615419d738c891" # v3
         env:
           CLUSTER: prod-gcp
           RESOURCE: nais/prod.yaml
